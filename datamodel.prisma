@@ -1,0 +1,48 @@
+type User {
+  id: ID! @id
+  email: String! @unique
+  password: String!
+  authorName: String @unique
+  following: [User!]! @relation(name: "FollowingRelation", link: INLINE)
+  followers: [User!]! @relation(name: "FollowRelation", link: INLINE)
+  poems: [Poem!]! @relation(name: "PoemRelation",link: INLINE)
+  avartar: String
+  categories: [Category!]! @relation(link: INLINE)
+  liked: [Poem!]! @relation(name: "LikeRelation"link: INLINE)
+  bookmarks: [Poem!]! @relation(name: "BookmarkRelation", link: INLINE)
+  createdAt: DateTime @createdAt
+}
+
+type Category {
+  id: ID! @id
+  title: String! @unique
+  createdAt: DateTime! @createdAt
+}
+
+type Poem {
+  id: ID! @id
+  title: String!
+  verse: [String!]!
+  backgroundColor: String @default(value: "#ffa001")
+  author: User! @relation(name: "PoemRelation")
+  likes: [Like!]! @relation(name: "PoemLikeRelation",link: INLINE)
+  comments: [Comment!]! @relation(name: "CommentRelation", link: INLINE)
+  createdAt: DateTime! @createdAt
+  published: Boolean! @default(value: false)
+}
+
+type Like {
+  id: ID! @id
+  user: User! @relation(link: INLINE)
+  poem: Poem! @relation(name: "PoemLikeRelation")
+  createdAt: DateTime! @createdAt
+}
+
+type Comment {
+  id: ID! @id
+  user: User! @relation(name: "UserCommentLink",link: INLINE)
+  text: String!
+  poem: Poem! @relation(name: "CommentRelation")
+  createdAt: DateTime @createdAt
+  replies: [Comment!]! @relation(link: INLINE)
+}

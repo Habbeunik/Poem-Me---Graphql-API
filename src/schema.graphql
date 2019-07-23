@@ -1,0 +1,94 @@
+type Follow {
+	users: [User!]!
+	count: Int
+}
+
+type User {
+	id: ID!
+	email: String!
+	authorName: String
+	following: Follow
+	followers: Follow
+	poems: [Poem!]!
+	avartar: String
+	categories: [Category!]!
+	bookmarks: [Poem!]!
+	createdAt: String
+}
+
+type Comment {
+	id: ID!
+	user: User!
+	text: String!
+	createdAt: String
+}
+
+type CommentReturnDataType {
+	data: [Comment!]!
+	count: Int
+}
+
+type Like {
+	id: ID!
+	user: User!
+	createdAt: String
+}
+
+type LikeReturnDataType {
+	data: [Like!]!
+	count: Int
+}
+
+type Poem {
+	id: ID!
+	title: String!
+	verse: [String!]!
+	backgroundColor: String
+	author: User!
+	likes: LikeReturnDataType!
+	comments: CommentReturnDataType!
+	createdAt: String
+	# likedByUser: Boolean
+}
+
+type Category {
+	id: ID!
+	title: String!
+}
+
+type AuthPayload {
+	token: String
+	user: User
+}
+
+input UserUpdateType {
+	authorName: String
+	avartar: String
+}
+
+input PeomDataType {
+	title: String
+	verse: [String!]!
+}
+
+type Mutation {
+	signUp(email: String, password: String): AuthPayload!
+	updateUser(data: UserUpdateType): User!
+	followUser(followedId: String): User!
+	unFollowUser(followedId: String): User!
+	createPoem(data: PeomDataType): Poem!
+	createCategory(title: String): Category!
+	likePoem(poemId: String, userId: String): Like!
+	createComment(poemId: String, userId: String, text: String): Comment!
+	replyComment(userId: String, commentId: String, text: String): Comment!
+	deletePoem(id: String): String!
+	deleteComment(id: String): String!
+}
+
+type Query {
+	poems: [Poem!]!
+	poem(id: String): Poem
+	poemsByUser(userId: String): [Poem!]!
+	user(id: String): User!
+	login(email: String, password: String): AuthPayload!
+}
