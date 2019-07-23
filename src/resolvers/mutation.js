@@ -8,24 +8,22 @@ const Mutation = {
 		const password = await bcrypt.hash(args.password, 10);
 		const user = await context.prisma.createUser({
 			email: args.email,
-			password,
+			password
 		});
 		const token = jwt.sign({ userId: user.id }, process.env.APP_SECRET);
 
 		return {
 			token,
-			user,
+			user
 		};
 	},
 
 	updateUser: (parent, args, context) => {
-		console.log('context request', context.request);
-		console.log('context user', context.currentUserId);
 		validateUserAuthorization(context.request);
 
 		return context.prisma.updateUser({
 			data: args.data,
-			where: { id: context.currentUserId },
+			where: { id: context.currentUserId }
 		});
 	},
 
@@ -36,17 +34,17 @@ const Mutation = {
 			where: { id: args.followedId },
 			data: {
 				followers: {
-					connect: { id: context.currentUserId },
-				},
-			},
+					connect: { id: context.currentUserId }
+				}
+			}
 		});
 		const follower = context.prisma.updateUser({
 			where: { id: context.currentUserId },
 			data: {
 				following: {
-					connect: { id: args.followedId },
-				},
-			},
+					connect: { id: args.followedId }
+				}
+			}
 		});
 
 		return follower;
@@ -59,18 +57,18 @@ const Mutation = {
 			where: { id: args.followedId },
 			data: {
 				followers: {
-					disconnect: { id: context.currentUserId },
-				},
-			},
+					disconnect: { id: context.currentUserId }
+				}
+			}
 		});
 
 		const follower = prisma.updateUser({
 			where: { id: context.currentUserId },
 			data: {
 				following: {
-					disconnect: { id: args.followedId },
-				},
-			},
+					disconnect: { id: args.followedId }
+				}
+			}
 		});
 
 		return follower;
@@ -82,11 +80,11 @@ const Mutation = {
 		return prisma.createPoem({
 			title: args.data.title,
 			verse: {
-				set: args.data.verse,
+				set: args.data.verse
 			},
 			author: {
-				connect: { id: context.currentUserId },
-			},
+				connect: { id: context.currentUserId }
+			}
 		});
 	},
 
@@ -95,17 +93,17 @@ const Mutation = {
 
 		prisma.createLike({
 			poem: {
-				connect: { id: args.poemId },
+				connect: { id: args.poemId }
 			},
 			user: {
-				connect: { id: context.currentUserId },
-			},
+				connect: { id: context.currentUserId }
+			}
 		});
 		return 'Poem has been liked';
 	},
 	createCategory: (parent, args, context) => {
 		return prisma.createCategory({
-			title: args.title,
+			title: args.title
 		});
 	},
 	createComment: (parent, args, context) => {
@@ -113,12 +111,12 @@ const Mutation = {
 
 		return prisma.createComment({
 			user: {
-				connect: { id: context.currentUserId },
+				connect: { id: context.currentUserId }
 			},
 			poem: {
-				connect: { id: args.poemId },
+				connect: { id: args.poemId }
 			},
-			text: args.text,
+			text: args.text
 		});
 	},
 	deletePoem: async (parent, args, context) => {
@@ -131,7 +129,7 @@ const Mutation = {
 		await prisma.deleteComment({ id: args.id });
 
 		return 'Comment Deleted Successfully';
-	},
+	}
 };
 
 module.exports = Mutation;
