@@ -78,9 +78,9 @@ type Mutation {
 	unFollowUser(followedId: String): User!
 	createPoem(data: PeomDataType): Poem!
 	createCategory(title: String): Category!
-	likePoem(poemId: String, userId: String): Like!
-	createComment(poemId: String, userId: String, text: String): Comment!
-	replyComment(userId: String, commentId: String, text: String): Comment!
+	likePoem(poemId: String): Like!
+	createComment(poemId: String, text: String): Comment!
+	replyComment(commentId: String, text: String): Comment!
 	deletePoem(id: String): String!
 	deleteComment(id: String): String!
 }
